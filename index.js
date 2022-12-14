@@ -61,10 +61,38 @@ class Calculator {
     this.previousOperand = "";
   }
 
-  updateDisplay() {
-    currentOperandTextElement.innerHTML = this.currentOperand;
-    previousOperandTextElement.innerHTML = this.previousOperand;
+  getDisplayNumber(number){
+    const stringNumber=number.toString();
+    const integerDigits=parseFloat(stringNumber.split('.')[0]);
+    const decimalDigits=stringNumber.split('.')[1];
+
+    let integerDisplay;
+    if(isNaN(integerDigits)){
+      integerDisplay='';
+    }
+    else{
+      integerDisplay=integerDigits.toLocaleString('en',{maximumFractionDigits:0});
+    }
+
+    if(decimalDigits!=null){
+      return `${integerDigits}.${decimalDigits}`;
+    }
+    else {
+      return integerDisplay
+    }
+
+
+    
   }
+
+  updateDisplay() {
+    currentOperandTextElement.innerHTML =this.getDisplayNumber(this.currentOperand) ;
+    if(this.operation!==null){
+    previousOperandTextElement.innerHTML = this.getDisplayNumber(`${this.previousOperand} ${this.operation} `);
+  }else{
+    this.previousOperandTextElement.innerHTML='';
+  }
+}
 }
 
 const numberButtons = document.querySelectorAll("[data-number]");
@@ -112,6 +140,7 @@ allClearButton.addEventListener("click", () => {
 equalButton.addEventListener("click",() => {
   calculator.compute();
   calculator.updateDisplay();
+  calculator.clear();
 });
 
 deleteButton.addEventListener("click", () => {
